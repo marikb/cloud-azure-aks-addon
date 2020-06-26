@@ -1,0 +1,12 @@
+# Bash script with Azure CLI
+
+#TODO: To finish
+Default_Location = "westeurope"
+rgName="Terraform-Rg"
+
+# Create RG
+# TODO: Validate
+rgObj="$(az group create -n terraform-rg -l westeurope --tags 'Application=Terraform' 'Environment=DEV' --output tsv)"
+
+# Create storage account
+storage="$(az storage account generate-sas --account-key 00000000 --account-name terraform-account --expiry 2021-01-01 --https-only --permissions acuw --resource-types co --services bfqt)"
