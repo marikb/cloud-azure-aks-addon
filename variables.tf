@@ -10,11 +10,11 @@ variable "ssh_public_key" {
 }
 
 variable "dns_prefix" {
-    default = "k8stest"
+    default = "exampleaks1"
 }
 
 variable cluster_name {
-    default = "k8stest"
+    default = "cluster-aks01"
 }
 
 variable resource_group_name {
@@ -25,16 +25,22 @@ variable location {
     default = "West Europe"
 }
 
+variable Environment_tag {
+    default = "Dev"
+}
+
+variable Application_tag {
+    default = "AKS App <Name>"
+}
+
 variable log_analytics_workspace_name {
     default = "testLogAnalyticsWorkspaceName"
 }
 
-# refer https://azure.microsoft.com/global-infrastructure/services/?products=monitor for log analytics available regions
 variable log_analytics_workspace_location {
-    default = "eastus"
+    default = "westeurope"
 }
 
-# refer https://azure.microsoft.com/pricing/details/monitor/ for log analytics pricing 
 variable log_analytics_workspace_sku {
     default = "PerGB2018"
 }

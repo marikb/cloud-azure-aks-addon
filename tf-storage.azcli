@@ -1,12 +1,15 @@
-# Bash script with Azure CLI
+# Powershell script with Azure CLI
 
 #TODO: To finish
-Default_Location = "westeurope"
-rgName="Terraform-Rg"
+$default_location = "westeurope"
+$rgName = "Terraform-Rg"
+$default_tags = @{"Application"="AKS-TF-Deployment"; "Environment"="DEV"}
 
 # Create RG
-# TODO: Validate
-rgObj="$(az group create -n terraform-rg -l westeurope --tags 'Application=Terraform' 'Environment=DEV' --output tsv)"
+$rgName = (az group create -n $rgName -l $default_location --tags 'Application=Terraform' 'Environment=DEV') | ConvertFrom-Json
+
+# Create storage
+$storageAccount = (az storage account create -n "Aks-StorageAccount" -g $rgName -l $default_location ) | Convertfrom-Json
 
 # Create storage account
-storage="$(az storage account generate-sas --account-key 00000000 --account-name terraform-account --expiry 2021-01-01 --https-only --permissions acuw --resource-types co --services bfqt)"
+$storage = (az storage account generate-sas --account-key 00000000 --account-name $storageAccount --expiry 2021-01-01 --https-only --permissions acuw --resource-types co --services bfqt) | convertfrom-json
