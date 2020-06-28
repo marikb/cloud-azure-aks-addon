@@ -1,3 +1,5 @@
+# Install AKS addon and add providers for all relevant subs
+
 # Log in first with az login if you're not using Cloud Shell
 # az login
 
@@ -62,3 +64,5 @@ foreach ($sub in (az account list --all --output tsv --query "[].name")) {
         $j+=8
     }
 }
+
+# TODO: Assign Policy template to require AKS add-on upon creation
