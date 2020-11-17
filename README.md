@@ -10,3 +10,12 @@ Script is running over all your subscriptions in the tenant and, if exist an AKS
 
 # Additional Resources
 AKS Addon - https://docs.microsoft.com/en-us/azure/governance/policy/concepts/policy-for-kubernetes#install-azure-policy-add-on-for-aks
+
+# Updates log
+## 17TH NOVEMBER
+
+* Replaced Service Principal credentials in managed Identity provides for a cleaner solution
+*	Changed random generation to Random Pet
+*	Added AAD group for Cluster admins
+*	Added data source connection based on automatically updated version
+*	Adding also OMS agent for Security Center detection and deny potentially insecure configurations.
