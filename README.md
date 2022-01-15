@@ -12,10 +12,21 @@ Script is running over all your subscriptions in the tenant and, if exist an AKS
 AKS Addon - https://docs.microsoft.com/en-us/azure/governance/policy/concepts/policy-for-kubernetes#install-azure-policy-add-on-for-aks
 
 # Updates log
-## 17TH NOVEMBER
 
-* Replaced Service Principal credentials in managed Identity provides for a cleaner solution
-*	Changed random generation to Random Pet
-*	Added AAD group for Cluster admins
-*	Added data source connection based on automatically updated version
+## 15TH NOVEMBER, 2022 - Automatic AKS upgrading
+
+* Define automatic K8s upgrade by: `automatic_channel_upgrade = patch / rapid / node-image / stable`
+*	Define Maintenance time for upgrading in `maintance_window`
+*	Set scalable node capacity to handle upgrades according to Microsoft's recommendations in `upgrade_settings`
+* Microsoft also recommends in deploy Kured for automatical reboot as needed.
+https://docs.microsoft.com/en-us/azure/aks/node-updates-kured
+
+
+
+## 17TH NOVEMBER, 2021 - Service Principal implementation
+
+* Replaced Service Principal credentials in managed Identity provides for a cleaner solution.
+*	Changed random generation to Random Pet.
+*	Added AAD group for Cluster admins.
+*	Added data source connection based on automatically updated version.
 *	Adding also OMS agent for Security Center detection and deny potentially insecure configurations.
