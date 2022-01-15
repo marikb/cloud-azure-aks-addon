@@ -4,6 +4,20 @@ resource "azurerm_kubernetes_cluster" "aks" {
   location            = azurerm_resource_group.primary.location
   name                = local.aks_cluster_name
   resource_group_name = azurerm_resource_group.primary.name
+  automatic_channel_upgrade = patch
+  
+  maintance_window {
+	allowed {
+	day = "thursday"
+	hours = [1,6]
+	}
+  }	
+  
+  upgrade_settings {
+	max_surge = "30"
+	} 
+  }
+
 
   default_node_pool {
     name                 = "system"
