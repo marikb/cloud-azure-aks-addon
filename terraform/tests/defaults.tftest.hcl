@@ -35,8 +35,8 @@ run "defaults_produce_expected_cluster" {
   }
 
   assert {
-    condition     = azurerm_kubernetes_cluster.aks.automatic_channel_upgrade == "patch"
-    error_message = "Default automatic_channel_upgrade should be patch."
+    condition     = azurerm_kubernetes_cluster.aks.automatic_upgrade_channel == "patch"
+    error_message = "Default automatic_upgrade_channel should be patch."
   }
 
   assert {
@@ -50,7 +50,7 @@ run "defaults_produce_expected_cluster" {
   }
 
   assert {
-    condition     = azurerm_kubernetes_cluster.aks.default_node_pool[0].enable_auto_scaling == true
+    condition     = azurerm_kubernetes_cluster.aks.default_node_pool[0].auto_scaling_enabled == true
     error_message = "The system node pool should have autoscaling enabled."
   }
 

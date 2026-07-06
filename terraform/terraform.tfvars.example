@@ -1,6 +1,9 @@
 # Copy this file to terraform.tfvars and adjust as needed.
 # Every value is optional; the defaults below match variables.tf.
 
+# Required by azurerm 4.x (or export ARM_SUBSCRIPTION_ID instead).
+subscription_id = "00000000-0000-0000-0000-000000000000"
+
 location            = "westeurope"
 resource_group_name = "aks-app"
 environment         = "Staging"

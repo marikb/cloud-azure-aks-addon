@@ -4,6 +4,19 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2026-07-06] - Upgrade to azurerm 4.x
+
+### Changed
+- Bumped the azurerm provider from `~> 3.117` to `~> 4.0` in both `terraform/` and
+  `governance/`, and migrated the 4.0 breaking changes:
+  - `automatic_channel_upgrade` → `automatic_upgrade_channel`.
+  - `default_node_pool.enable_auto_scaling` → `auto_scaling_enabled`.
+  - Removed `managed = true` from `azure_active_directory_role_based_access_control`
+    (managed Entra integration is the only mode in 4.x).
+  - Added the now-mandatory provider `subscription_id` (new `subscription_id`
+    variable, or set the `ARM_SUBSCRIPTION_ID` environment variable).
+- Regenerated the cross-platform provider lock files for azurerm 4.x.
+
 ## [2026-07-06] - Modernization & repository reorganization
 
 ### Changed

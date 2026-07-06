@@ -5,20 +5,20 @@ resource "azurerm_kubernetes_cluster" "aks" {
   dns_prefix          = local.cluster_name
 
   kubernetes_version        = local.kubernetes_version
-  automatic_channel_upgrade = var.automatic_channel_upgrade
+  automatic_upgrade_channel = var.automatic_channel_upgrade
 
   identity {
     type = "SystemAssigned"
   }
 
   default_node_pool {
-    name                = "system"
-    vm_size             = var.system_node_vm_size
-    zones               = var.availability_zones
-    enable_auto_scaling = true
-    min_count           = var.system_node_min_count
-    max_count           = var.system_node_max_count
-    os_disk_size_gb     = var.system_node_os_disk_size_gb
+    name                 = "system"
+    vm_size              = var.system_node_vm_size
+    zones                = var.availability_zones
+    auto_scaling_enabled = true
+    min_count            = var.system_node_min_count
+    max_count            = var.system_node_max_count
+    os_disk_size_gb      = var.system_node_os_disk_size_gb
     # orchestrator_version is intentionally left unset: AKS manages it via the
     # automatic upgrade channel, and pinning it here conflicts with auto-upgrade.
 
@@ -32,7 +32,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
     }
   }
 
-  # Azure Policy add-on (top-level boolean in azurerm 3.x).
+  # Azure Policy add-on (top-level boolean).
   azure_policy_enabled = true
 
   # Container Insights / Log Analytics monitoring. msi_auth uses the cluster's
@@ -45,8 +45,8 @@ resource "azurerm_kubernetes_cluster" "aks" {
   # Managed Azure AD integration with a dedicated cluster-admin group.
   role_based_access_control_enabled = true
 
+  # managed Entra integration is the only mode in azurerm 4.x (no `managed` arg).
   azure_active_directory_role_based_access_control {
-    managed                = true
     admin_group_object_ids = [azuread_group.aks_administrators.object_id]
     azure_rbac_enabled     = var.azure_rbac_enabled
   }
