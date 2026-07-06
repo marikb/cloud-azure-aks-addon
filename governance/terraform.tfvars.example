@@ -22,3 +22,8 @@ management_group_name = "mg-root"
 # Pod-security-standards enforcement initiative:
 # assign_security_baseline = true
 # baseline_effect          = "Audit"            # or "Deny" to block non-compliant workloads
+# Swap to the stricter "restricted" profile if desired:
+# baseline_set_definition_id = "/providers/Microsoft.Authorization/policySetDefinitions/42b8ef37-b724-4e24-bbc8-7a7708edfe00"
+# Add YOUR infra namespaces here before switching to Deny (defaults already cover
+# kube-system, gatekeeper-system, azure-arc, azure-extensions-usage-system):
+# baseline_excluded_namespaces = ["kube-system", "gatekeeper-system", "azure-arc", "azure-extensions-usage-system", "ingress-nginx"]

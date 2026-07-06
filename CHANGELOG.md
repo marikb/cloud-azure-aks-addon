@@ -4,6 +4,18 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2026-07-06] - Deny-mode enablement for pod security
+
+### Added
+- `baseline_excluded_namespaces` on the governance module, passed to the
+  pod-security initiative's `excludedNamespaces` parameter (defaults to the built-in
+  system namespaces). Lets you exempt your infra namespaces so
+  `baseline_effect = "Deny"` doesn't block ingress/CSI/monitoring workloads.
+
+### Changed
+- Documented the safe Audit → review → exclude → Deny rollout, and how to swap to
+  the stricter "restricted" initiative.
+
 ## [2026-07-06] - Key Vault CSI and host encryption
 
 ### Added

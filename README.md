@@ -124,6 +124,13 @@ baseline** initiative in **Audit** mode by default (set `baseline_effect = "Deny
 to block non-compliant workloads, or `assign_security_baseline = false` to skip) —
 so it enforces guardrails, not just installs the add-on.
 
+**Rolling out Deny safely:** stay in Audit first, review compliance in the Azure
+Policy portal to see which workloads would be blocked, add your infra namespaces
+(ingress, CSI, monitoring, service mesh) to `baseline_excluded_namespaces`, and only
+then flip `baseline_effect = "Deny"`. It's management-group scoped, so Deny hits
+every current and future cluster at once — stage it. Roll out the baseline profile
+before the stricter "restricted" one (`baseline_set_definition_id`).
+
 This is complementary to the cluster module: `terraform/` enables the add-on
 immediately on clusters it creates, and the policy is the safety net for
 everything else.

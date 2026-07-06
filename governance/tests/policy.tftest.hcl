@@ -61,6 +61,24 @@ run "assignment_configured_correctly" {
     condition     = jsondecode(azurerm_management_group_policy_assignment.security_baseline[0].parameters).effect.value == "Audit"
     error_message = "The baseline initiative should default to Audit effect."
   }
+
+  assert {
+    condition     = contains(jsondecode(azurerm_management_group_policy_assignment.security_baseline[0].parameters).excludedNamespaces.value, "kube-system")
+    error_message = "System namespaces should be excluded from the baseline initiative."
+  }
+}
+
+run "baseline_deny_mode" {
+  command = plan
+
+  variables {
+    baseline_effect = "Deny"
+  }
+
+  assert {
+    condition     = jsondecode(azurerm_management_group_policy_assignment.security_baseline[0].parameters).effect.value == "Deny"
+    error_message = "Setting baseline_effect to Deny should propagate to the initiative."
+  }
 }
 
 run "baseline_can_be_disabled" {
