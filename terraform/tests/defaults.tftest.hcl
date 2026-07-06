@@ -136,3 +136,21 @@ run "pinned_kubernetes_version_is_honored" {
     error_message = "An explicitly pinned kubernetes_version should override the data-source default."
   }
 }
+
+run "private_cluster_mode" {
+  command = plan
+
+  variables {
+    private_cluster_enabled = true
+  }
+
+  assert {
+    condition     = azurerm_kubernetes_cluster.aks.private_cluster_enabled == true
+    error_message = "private_cluster_enabled should propagate to the cluster."
+  }
+
+  assert {
+    condition     = length(azurerm_subnet.aks) == 1
+    error_message = "A VNet subnet should be created when the cluster is private."
+  }
+}

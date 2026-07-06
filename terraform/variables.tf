@@ -206,3 +206,45 @@ variable "kv_secret_rotation_interval" {
   description = "Poll interval for the Key Vault CSI secret rotation (e.g. \"2m\")."
   default     = "2m"
 }
+
+variable "private_cluster_enabled" {
+  type        = bool
+  description = <<-EOT
+    Make the API server private. OPT-IN and consequential: this is ForceNew (flipping
+    it on an existing cluster RECREATES it), it provisions a VNet/subnet, and it
+    breaks `az aks get-credentials` + kubectl from outside the VNet (use
+    `az aks command invoke`, a jumpbox, or VPN/peering). Also makes
+    api_server_authorized_ip_ranges inert. Leave false unless you're building
+    greenfield or doing a planned rebuild.
+  EOT
+  default     = false
+}
+
+variable "private_cluster_public_fqdn_enabled" {
+  type        = bool
+  description = "For a private cluster, also expose a public FQDN for the API server (easier ops). Ignored when private_cluster_enabled = false."
+  default     = true
+}
+
+variable "private_dns_zone_id" {
+  type        = string
+  description = <<-EOT
+    Private DNS zone for a private cluster: "System" (AKS-managed, simplest, works
+    with the SystemAssigned identity), "None" (bring your own DNS — cannot be
+    combined with public FQDN disabled), or a custom Private DNS zone resource id
+    (requires a UserAssigned identity with Private DNS Zone Contributor).
+  EOT
+  default     = "System"
+}
+
+variable "vnet_address_space" {
+  type        = list(string)
+  description = "Address space for the VNet created for a private cluster."
+  default     = ["10.1.0.0/16"]
+}
+
+variable "aks_subnet_address_prefix" {
+  type        = string
+  description = "Address prefix for the AKS node subnet (within vnet_address_space)."
+  default     = "10.1.0.0/20"
+}

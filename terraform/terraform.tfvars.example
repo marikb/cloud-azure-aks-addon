@@ -45,3 +45,10 @@ api_server_authorized_ip_ranges = []
 #   az feature register --namespace Microsoft.Compute --name EncryptionAtHost
 host_encryption_enabled     = true
 kv_secret_rotation_interval = "2m"
+
+# --- Private cluster (opt-in; ForceNew rebuild + creates a VNet) ---
+# private_cluster_enabled             = false
+# private_cluster_public_fqdn_enabled = true
+# private_dns_zone_id                 = "System"   # or "None" or a custom zone id
+# vnet_address_space                  = ["10.1.0.0/16"]
+# aks_subnet_address_prefix           = "10.1.0.0/20"

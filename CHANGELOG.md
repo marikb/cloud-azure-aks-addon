@@ -4,6 +4,15 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2026-07-06] - Optional private cluster
+
+### Added
+- Opt-in private cluster support (`private_cluster_enabled`, default false). When
+  enabled it provisions a VNet + subnet (`network.tf`) and makes the API server
+  private (`private_dns_zone_id`, `private_cluster_public_fqdn_enabled`). ForceNew —
+  enabling it on an existing cluster recreates it, and `kubectl` then requires
+  `az aks command invoke`, a jumpbox, or VPN/peering.
+
 ## [2026-07-06] - Remote-state bootstrap
 
 ### Added
