@@ -40,3 +40,8 @@ dns_service_ip = "10.0.0.10"
 # MUST include your client egress (e.g. Cloud Shell) or you will lock yourself out.
 # api_server_authorized_ip_ranges = ["203.0.113.10/32"]
 api_server_authorized_ip_ranges = []
+
+# Host encryption REQUIRES registering the feature first:
+#   az feature register --namespace Microsoft.Compute --name EncryptionAtHost
+host_encryption_enabled     = true
+kv_secret_rotation_interval = "2m"

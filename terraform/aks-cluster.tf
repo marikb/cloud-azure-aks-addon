@@ -29,6 +29,10 @@ resource "azurerm_kubernetes_cluster" "aks" {
     min_count            = var.system_node_min_count
     max_count            = var.system_node_max_count
     os_disk_size_gb      = var.system_node_os_disk_size_gb
+    # Encrypt the VM host (temp disk + OS/data disk caches) at rest. ForceNew, but
+    # rotates in place via temporary_name_for_rotation below. Requires the
+    # Microsoft.Compute/EncryptionAtHost subscription feature to be registered.
+    host_encryption_enabled = var.host_encryption_enabled
     # orchestrator_version is intentionally left unset: AKS manages it via the
     # automatic upgrade channel, and pinning it here conflicts with auto-upgrade.
 
@@ -69,6 +73,14 @@ resource "azurerm_kubernetes_cluster" "aks" {
 
   # Azure Policy add-on (top-level boolean).
   azure_policy_enabled = true
+
+  # Secrets Store CSI driver — lets pods mount Key Vault secrets/certs. Pairs with
+  # the Workload Identity enabled above. The Key Vault and SecretProviderClass are
+  # provisioned separately (app-level); this only installs the driver.
+  key_vault_secrets_provider {
+    secret_rotation_enabled  = true
+    secret_rotation_interval = var.kv_secret_rotation_interval
+  }
 
   # Container Insights / Log Analytics monitoring. msi_auth uses the cluster's
   # managed identity to publish metrics instead of the workspace shared key.

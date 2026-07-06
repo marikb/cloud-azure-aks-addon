@@ -188,3 +188,21 @@ variable "dns_service_ip" {
   description = "In-cluster DNS service IP (must be inside service_cidr)."
   default     = "10.0.0.10"
 }
+
+variable "host_encryption_enabled" {
+  type        = bool
+  description = <<-EOT
+    Encrypt node VM hosts at rest (temp disk + disk caches). Requires the
+    Microsoft.Compute/EncryptionAtHost subscription feature to be registered FIRST
+    (`az feature register --namespace Microsoft.Compute --name EncryptionAtHost`)
+    and a VM size that supports it. Toggling this rotates the system node pool in
+    place (brief disruption).
+  EOT
+  default     = true
+}
+
+variable "kv_secret_rotation_interval" {
+  type        = string
+  description = "Poll interval for the Key Vault CSI secret rotation (e.g. \"2m\")."
+  default     = "2m"
+}
