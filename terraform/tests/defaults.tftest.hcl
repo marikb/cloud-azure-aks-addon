@@ -93,6 +93,16 @@ run "defaults_produce_expected_cluster" {
     condition     = azurerm_kubernetes_cluster.aks.network_profile[0].network_policy == "cilium"
     error_message = "Network policy should be enforced via Cilium."
   }
+
+  assert {
+    condition     = azurerm_kubernetes_cluster.aks.default_node_pool[0].host_encryption_enabled == true
+    error_message = "Host encryption should be enabled on the system node pool by default."
+  }
+
+  assert {
+    condition     = azurerm_kubernetes_cluster.aks.key_vault_secrets_provider[0].secret_rotation_enabled == true
+    error_message = "The Key Vault Secrets Provider (CSI) should be enabled with rotation."
+  }
 }
 
 run "override_node_counts" {

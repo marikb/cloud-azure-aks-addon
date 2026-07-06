@@ -4,6 +4,16 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2026-07-06] - Key Vault CSI and host encryption
+
+### Added
+- Key Vault Secrets Provider (CSI driver) with secret rotation
+  (`kv_secret_rotation_interval`) — pairs with the enabled Workload Identity. The
+  Key Vault and `SecretProviderClass` are provisioned separately (app-level).
+- Host encryption on the system node pool (`host_encryption_enabled`, default
+  true). Requires the `Microsoft.Compute/EncryptionAtHost` subscription feature to
+  be registered first; toggling it rotates the node pool in place.
+
 ## [2026-07-06] - Security hardening, policy enforcement & ops
 
 ### Added

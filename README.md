@@ -33,6 +33,10 @@ For full documentation see the
 - For `governance/` only: **Owner** (or Resource Policy Contributor + User Access
   Administrator) on the target management group, since it creates policy and role
   assignments at that scope.
+- For host encryption (on by default), register the feature once per subscription
+  before `apply`: `az feature register --namespace Microsoft.Compute --name EncryptionAtHost`
+  (then `az provider register --namespace Microsoft.Compute`). Set
+  `host_encryption_enabled = false` to skip.
 
 ## Provision a cluster with Terraform
 
@@ -70,9 +74,10 @@ terraform test
 ### Security defaults
 
 The cluster ships hardened: local admin accounts disabled (all access via Entra),
-Workload Identity + OIDC issuer on, Image Cleaner on, and **Azure CNI Overlay with
-Cilium network policy** so `NetworkPolicy` objects are actually enforced. Two knobs
-need your attention:
+Workload Identity + OIDC issuer on, Image Cleaner on, host encryption on the nodes,
+the Key Vault Secrets Provider (CSI) for mounting secrets, and **Azure CNI Overlay
+with Cilium network policy** so `NetworkPolicy` objects are actually enforced. Two
+knobs need your attention:
 
 - `api_server_authorized_ip_ranges` — empty by default (API server is public). To
   lock it down, set your client egress CIDRs (**including Cloud Shell's**) or you
