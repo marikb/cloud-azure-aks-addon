@@ -4,6 +4,13 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2026-07-06] - Remote-state bootstrap
+
+### Added
+- `scripts/Bootstrap-TfState.ps1` — one-time bootstrap of the Azure Storage account
+  for Terraform remote state (AAD-auth-only, TLS 1.2, blob versioning + soft delete,
+  grants Storage Blob Data Contributor). Pairs with the `backend.tf.example` templates.
+
 ## [2026-07-06] - Deny-mode enablement for pod security
 
 ### Added
