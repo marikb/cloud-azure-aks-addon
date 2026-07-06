@@ -1,3 +1,9 @@
+variable "subscription_id" {
+  type        = string
+  description = "Azure subscription ID for the azurerm provider (required by azurerm 4.x). Leave null to fall back to the ARM_SUBSCRIPTION_ID environment variable."
+  default     = null
+}
+
 variable "management_group_name" {
   type        = string
   description = <<-EOT
