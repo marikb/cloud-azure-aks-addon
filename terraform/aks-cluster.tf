@@ -22,9 +22,11 @@ resource "azurerm_kubernetes_cluster" "aks" {
   }
 
   default_node_pool {
-    name                 = "system"
-    vm_size              = var.system_node_vm_size
-    zones                = var.availability_zones
+    name    = "system"
+    vm_size = var.system_node_vm_size
+    zones   = var.availability_zones
+    # BYO subnet only for a private cluster; null uses the AKS-managed VNet.
+    vnet_subnet_id       = var.private_cluster_enabled ? azurerm_subnet.aks[0].id : null
     auto_scaling_enabled = true
     min_count            = var.system_node_min_count
     max_count            = var.system_node_max_count
@@ -70,6 +72,13 @@ resource "azurerm_kubernetes_cluster" "aks" {
       authorized_ip_ranges = var.api_server_authorized_ip_ranges
     }
   }
+
+  # Private cluster (opt-in). private_cluster_enabled is ForceNew — enabling it on
+  # an existing cluster recreates it. The DNS-zone and public-FQDN settings only
+  # apply when private.
+  private_cluster_enabled             = var.private_cluster_enabled
+  private_cluster_public_fqdn_enabled = var.private_cluster_enabled ? var.private_cluster_public_fqdn_enabled : false
+  private_dns_zone_id                 = var.private_cluster_enabled ? var.private_dns_zone_id : null
 
   # Azure Policy add-on (top-level boolean).
   azure_policy_enabled = true

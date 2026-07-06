@@ -86,6 +86,16 @@ knobs need your attention:
 - The `network_profile` is **ForceNew** — changing the plugin/policy/CIDRs after
   creation recreates the cluster, so decide at provisioning time.
 
+### Private cluster (opt-in)
+
+Set `private_cluster_enabled = true` to make the API server private. It's a
+deliberate, **cluster-recreating** change (ForceNew): it provisions a VNet/subnet,
+and once private, `kubectl` from outside the VNet stops working — use
+`az aks command invoke`, a jumpbox, or VPN/peering. `private_dns_zone_id` defaults
+to `System` (AKS-managed); `private_cluster_public_fqdn_enabled` (default true)
+keeps a public FQDN for easier ops. `api_server_authorized_ip_ranges` no longer
+applies once fully private.
+
 ## Govern all clusters at scale with a policy (recommended)
 
 The `governance/` module assigns the built-in **"Deploy Azure Policy Add-on to
