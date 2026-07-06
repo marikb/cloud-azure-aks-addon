@@ -1,0 +1,25 @@
+# Copy this file to terraform.tfvars and adjust as needed.
+# Every value is optional; the defaults below match variables.tf.
+
+location            = "westeurope"
+resource_group_name = "aks-app"
+environment         = "Staging"
+application         = "aks-app"
+
+# Pin a Kubernetes minor version, or leave commented to track the latest GA minor.
+# kubernetes_version = "1.30"
+
+automatic_channel_upgrade = "patch"
+
+system_node_vm_size         = "Standard_DS2_v2"
+system_node_min_count       = 1
+system_node_max_count       = 3
+system_node_os_disk_size_gb = 128
+availability_zones          = ["1", "2", "3"]
+node_max_surge              = "33%"
+
+maintenance_day   = "Sunday"
+maintenance_hours = [1, 2, 3]
+
+log_retention_days = 30
+azure_rbac_enabled = false
