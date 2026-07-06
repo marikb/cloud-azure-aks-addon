@@ -1,0 +1,12 @@
+# Normalize line endings to LF so the repo is consistent across Windows editing
+# and Linux (Cloud Shell / CI) execution. Stops the "LF will be replaced by CRLF"
+# churn. Run `git add --renormalize .` once to apply to already-committed files.
+* text=auto eol=lf
+
+*.tf        text eol=lf
+*.hcl       text eol=lf
+*.tftest.hcl text eol=lf
+*.ps1       text eol=lf
+*.md        text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf

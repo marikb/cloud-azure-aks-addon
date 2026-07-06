@@ -26,3 +26,17 @@ maintenance_hours = [1, 2, 3]
 
 log_retention_days = 30
 azure_rbac_enabled = false
+
+# --- Hardening ---
+local_account_disabled       = true
+image_cleaner_interval_hours = 48
+
+# Networking (Azure CNI Overlay + Cilium). Adjust CIDRs to avoid overlaps.
+pod_cidr       = "10.244.0.0/16"
+service_cidr   = "10.0.0.0/16"
+dns_service_ip = "10.0.0.10"
+
+# Lock the API server to specific CIDRs. Leave empty to keep it public.
+# MUST include your client egress (e.g. Cloud Shell) or you will lock yourself out.
+# api_server_authorized_ip_ranges = ["203.0.113.10/32"]
+api_server_authorized_ip_ranges = []

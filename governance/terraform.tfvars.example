@@ -11,3 +11,14 @@ management_group_name = "mg-root"
 # assignment_name         = "aks-policy-addon"
 # effect                  = "DeployIfNotExists"   # or "Disabled"
 # create_remediation_task = true
+
+# The two built-in roles the add-on DINE policy requires (change only if the
+# built-in policy is revised):
+# remediation_role_definition_ids = [
+#   "ed7f3fbd-7b88-4dd4-9017-9adb7ce333f8", # Azure Kubernetes Service Contributor Role
+#   "18ed5180-3e48-46fd-8541-4ea054d57064", # Azure Kubernetes Service Policy Add-on Deployment
+# ]
+
+# Pod-security-standards enforcement initiative:
+# assign_security_baseline = true
+# baseline_effect          = "Audit"            # or "Deny" to block non-compliant workloads

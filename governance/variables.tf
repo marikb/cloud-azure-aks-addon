@@ -66,3 +66,42 @@ variable "remediation_role_definition_ids" {
     "18ed5180-3e48-46fd-8541-4ea054d57064", # Azure Kubernetes Service Policy Add-on Deployment
   ]
 }
+
+variable "assign_security_baseline" {
+  type        = bool
+  description = "Also assign a built-in Kubernetes pod-security-standards initiative so clusters are evaluated against guardrails (not just given the add-on)."
+  default     = true
+}
+
+variable "baseline_set_definition_id" {
+  type        = string
+  description = <<-EOT
+    Built-in policy SET definition (initiative) to assign for pod security.
+    Default is "Kubernetes cluster pod security baseline standards for Linux-based
+    workloads". Swap to the "restricted" set (42b8ef37-b724-4e24-bbc8-7a7708edfe00)
+    for the stricter profile.
+  EOT
+  default     = "/providers/Microsoft.Authorization/policySetDefinitions/a8640138-9b0a-4a28-b8cb-1666c838647d"
+}
+
+variable "baseline_effect" {
+  type        = string
+  description = "Effect for the pod-security initiative. Start with Audit; use Deny to block non-compliant workloads."
+  default     = "Audit"
+
+  validation {
+    condition     = contains(["Audit", "Deny", "Disabled"], var.baseline_effect)
+    error_message = "baseline_effect must be one of: Audit, Deny, Disabled."
+  }
+}
+
+variable "baseline_assignment_name" {
+  type        = string
+  description = "Name of the pod-security initiative assignment (3-24 characters)."
+  default     = "aks-pss-baseline"
+
+  validation {
+    condition     = length(var.baseline_assignment_name) >= 3 && length(var.baseline_assignment_name) <= 24
+    error_message = "baseline_assignment_name must be between 3 and 24 characters."
+  }
+}
