@@ -19,6 +19,7 @@ For full documentation see the
 | `terraform/` | Terraform config that provisions a **new** AKS cluster with the Azure Policy add-on, managed Azure AD RBAC, autoscaling, automatic upgrades, and Log Analytics monitoring. |
 | `governance/` | Terraform config that assigns a management-group **DeployIfNotExists** policy so **all current and future** AKS clusters get the Azure Policy add-on automatically. This is the recommended at-scale mechanism. |
 | `scripts/Enable-AksPolicyAddon.ps1` | Optional **one-time backfill**: enables the add-on on existing AKS clusters across every subscription your account can access. |
+| `scripts/Bootstrap-TfState.ps1` | Optional: creates the Azure Storage account for Terraform remote state. |
 | `*/tests/` | Native `terraform test` suites (run with no Azure credentials via `mock_provider`). |
 | `CHANGELOG.md` | History of notable changes. |
 
@@ -153,9 +154,15 @@ which the script registers automatically. For ongoing governance, prefer the
 
 ## Remote state (optional)
 
-State is local by default. To use Azure Blob state with locking, rename
-`backend.tf.example` to `backend.tf` in each module, bootstrap a storage account
-out-of-band, and `terraform init`. Use a **distinct state key per module**.
+State is local by default. To use Azure Blob state with locking:
+
+1. Bootstrap the storage account once:
+   `./scripts/Bootstrap-TfState.ps1 -StorageAccountName <globally-unique-name>`
+   (creates the RG, an AAD-auth-only storage account with blob versioning + soft
+   delete, a container, and grants you `Storage Blob Data Contributor`).
+2. Rename `backend.tf.example` to `backend.tf` in each module and fill in the values
+   the script prints — use a **distinct `key` per module**.
+3. `terraform init` (Terraform offers to migrate existing local state).
 
 ## Continuous integration
 
