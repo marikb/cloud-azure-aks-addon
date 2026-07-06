@@ -82,11 +82,15 @@ resource "azurerm_management_group_policy_assignment" "security_baseline" {
   policy_definition_id = var.baseline_set_definition_id
   description          = "Enforce Kubernetes pod security standards (${var.baseline_effect}) on all AKS clusters in this management group."
 
-  # The initiative exposes a single top-level 'effect' that fans out to every
-  # member policy.
+  # 'effect' fans out to every member policy. 'excludedNamespaces' spares the
+  # listed namespaces from evaluation — critical before flipping to Deny so your
+  # own ingress/CSI/monitoring workloads aren't blocked at admission.
   parameters = jsonencode({
     effect = {
       value = var.baseline_effect
+    }
+    excludedNamespaces = {
+      value = var.baseline_excluded_namespaces
     }
   })
 

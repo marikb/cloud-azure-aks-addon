@@ -86,13 +86,33 @@ variable "baseline_set_definition_id" {
 
 variable "baseline_effect" {
   type        = string
-  description = "Effect for the pod-security initiative. Start with Audit; use Deny to block non-compliant workloads."
+  description = <<-EOT
+    Effect for the pod-security initiative. Start with Audit; flip to Deny only
+    after reviewing compliance and adding your infra namespaces to
+    baseline_excluded_namespaces (Deny blocks non-compliant pods at admission).
+  EOT
   default     = "Audit"
 
   validation {
     condition     = contains(["Audit", "Deny", "Disabled"], var.baseline_effect)
     error_message = "baseline_effect must be one of: Audit, Deny, Disabled."
   }
+}
+
+variable "baseline_excluded_namespaces" {
+  type        = list(string)
+  description = <<-EOT
+    Namespaces exempt from the pod-security initiative. Azure Policy already
+    auto-excludes kube-system and gatekeeper-system, but under Deny your OWN infra
+    workloads (ingress, CSI, monitoring, service mesh) will be blocked unless their
+    namespaces are listed here. Add them before switching to Deny.
+  EOT
+  default = [
+    "kube-system",
+    "gatekeeper-system",
+    "azure-arc",
+    "azure-extensions-usage-system",
+  ]
 }
 
 variable "baseline_assignment_name" {
