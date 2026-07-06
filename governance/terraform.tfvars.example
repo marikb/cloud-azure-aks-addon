@@ -1,0 +1,10 @@
+# Copy this file to terraform.tfvars and set your management group.
+
+# The management group NAME (for the tenant root MG, this is the tenant ID).
+management_group_name = "mg-root"
+
+# Optional overrides (defaults shown):
+# identity_location       = "westeurope"
+# assignment_name         = "aks-policy-addon"
+# effect                  = "DeployIfNotExists"   # or "Disabled"
+# create_remediation_task = true
