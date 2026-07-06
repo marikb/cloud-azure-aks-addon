@@ -78,6 +78,21 @@ run "defaults_produce_expected_cluster" {
     condition     = azurerm_log_analytics_workspace.insights.retention_in_days == 30
     error_message = "Default Log Analytics retention should be 30 days."
   }
+
+  assert {
+    condition     = azurerm_kubernetes_cluster.aks.local_account_disabled == true
+    error_message = "Local admin accounts should be disabled by default."
+  }
+
+  assert {
+    condition     = azurerm_kubernetes_cluster.aks.oidc_issuer_enabled == true && azurerm_kubernetes_cluster.aks.workload_identity_enabled == true
+    error_message = "OIDC issuer and Workload Identity should be enabled."
+  }
+
+  assert {
+    condition     = azurerm_kubernetes_cluster.aks.network_profile[0].network_policy == "cilium"
+    error_message = "Network policy should be enforced via Cilium."
+  }
 }
 
 run "override_node_counts" {

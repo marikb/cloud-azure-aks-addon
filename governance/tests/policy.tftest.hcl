@@ -46,6 +46,34 @@ run "assignment_configured_correctly" {
     condition     = length(azurerm_management_group_policy_remediation.aks_policy_addon) == 1
     error_message = "A remediation task should be created by default (backfills existing clusters)."
   }
+
+  assert {
+    condition     = length(azurerm_management_group_policy_assignment.security_baseline) == 1
+    error_message = "The pod-security baseline initiative should be assigned by default."
+  }
+
+  assert {
+    condition     = endswith(azurerm_management_group_policy_assignment.security_baseline[0].policy_definition_id, "a8640138-9b0a-4a28-b8cb-1666c838647d")
+    error_message = "The baseline assignment must reference the built-in pod-security baseline initiative."
+  }
+
+  assert {
+    condition     = jsondecode(azurerm_management_group_policy_assignment.security_baseline[0].parameters).effect.value == "Audit"
+    error_message = "The baseline initiative should default to Audit effect."
+  }
+}
+
+run "baseline_can_be_disabled" {
+  command = plan
+
+  variables {
+    assign_security_baseline = false
+  }
+
+  assert {
+    condition     = length(azurerm_management_group_policy_assignment.security_baseline) == 0
+    error_message = "No baseline assignment should be created when assign_security_baseline is false."
+  }
 }
 
 run "disabled_effect_skips_remediation" {

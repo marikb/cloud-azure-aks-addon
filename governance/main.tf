@@ -69,3 +69,28 @@ resource "azurerm_management_group_policy_remediation" "aks_policy_addon" {
   #   terraform apply -replace=azurerm_management_group_policy_remediation.aks_policy_addon[0]
   depends_on = [azurerm_role_assignment.remediation]
 }
+
+# Enforcement: assign a built-in Kubernetes pod-security-standards INITIATIVE so
+# clusters are actually evaluated against guardrails (the DINE policy above only
+# installs the add-on). Audit-only by default; audit/deny effects need no managed
+# identity or role assignment. Requires the add-on, which the policy above ensures.
+resource "azurerm_management_group_policy_assignment" "security_baseline" {
+  count = var.assign_security_baseline ? 1 : 0
+
+  name                 = var.baseline_assignment_name
+  management_group_id  = data.azurerm_management_group.this.id
+  policy_definition_id = var.baseline_set_definition_id
+  description          = "Enforce Kubernetes pod security standards (${var.baseline_effect}) on all AKS clusters in this management group."
+
+  # The initiative exposes a single top-level 'effect' that fans out to every
+  # member policy.
+  parameters = jsonencode({
+    effect = {
+      value = var.baseline_effect
+    }
+  })
+
+  non_compliance_message {
+    content = "Workloads must comply with the Kubernetes pod security baseline standards."
+  }
+}

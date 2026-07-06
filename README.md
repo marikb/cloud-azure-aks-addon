@@ -67,6 +67,19 @@ terraform init
 terraform test
 ```
 
+### Security defaults
+
+The cluster ships hardened: local admin accounts disabled (all access via Entra),
+Workload Identity + OIDC issuer on, Image Cleaner on, and **Azure CNI Overlay with
+Cilium network policy** so `NetworkPolicy` objects are actually enforced. Two knobs
+need your attention:
+
+- `api_server_authorized_ip_ranges` — empty by default (API server is public). To
+  lock it down, set your client egress CIDRs (**including Cloud Shell's**) or you
+  will lock yourself out.
+- The `network_profile` is **ForceNew** — changing the plugin/policy/CIDRs after
+  creation recreates the cluster, so decide at provisioning time.
+
 ## Govern all clusters at scale with a policy (recommended)
 
 The `governance/` module assigns the built-in **"Deploy Azure Policy Add-on to
@@ -101,6 +114,11 @@ terraform apply -replace=azurerm_management_group_policy_remediation.aks_policy_
 
 For an *immediate* backfill instead of waiting, run the one-time script below.
 
+Beyond installing the add-on, the module also assigns a built-in **pod security
+baseline** initiative in **Audit** mode by default (set `baseline_effect = "Deny"`
+to block non-compliant workloads, or `assign_security_baseline = false` to skip) —
+so it enforces guardrails, not just installs the add-on.
+
 This is complementary to the cluster module: `terraform/` enables the add-on
 immediately on clusters it creates, and the policy is the safety net for
 everything else.
@@ -120,6 +138,19 @@ The Azure Policy add-on for AKS is Generally Available, so no preview extension 
 feature registration is required — only the `Microsoft.PolicyInsights` provider,
 which the script registers automatically. For ongoing governance, prefer the
 `governance/` policy above over re-running this script.
+
+## Remote state (optional)
+
+State is local by default. To use Azure Blob state with locking, rename
+`backend.tf.example` to `backend.tf` in each module, bootstrap a storage account
+out-of-band, and `terraform init`. Use a **distinct state key per module**.
+
+## Continuous integration
+
+[.github/workflows/terraform.yml](.github/workflows/terraform.yml) runs
+`fmt` / `validate` / `terraform test` on both modules for every PR — no cloud
+credentials, since the tests use `mock_provider`. It's included in the repo, but
+committing workflow files requires a `gh` token with `workflow` scope.
 
 ## Additional resources
 

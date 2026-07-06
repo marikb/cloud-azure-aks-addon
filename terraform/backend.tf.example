@@ -1,0 +1,17 @@
+# Remote state backend (OPTIONAL). By default state is local. To use Azure Blob
+# state with locking, rename this file to backend.tf and fill in the values (or
+# pass them via `terraform init -backend-config=...`).
+#
+# Bootstrap the storage account out-of-band first (chicken-and-egg): create an
+# RG, a globally-unique storage account, and a container before init. Use a
+# DISTINCT `key` per module so terraform/ and governance/ never share state.
+#
+# terraform {
+#   backend "azurerm" {
+#     resource_group_name  = "rg-tfstate"
+#     storage_account_name = "sttfstateexample"    # globally unique, 3-24 lowercase alnum
+#     container_name       = "tfstate"
+#     key                  = "aks-cluster.tfstate"
+#     use_azuread_auth     = true                  # auth via your az login, no storage keys
+#   }
+# }

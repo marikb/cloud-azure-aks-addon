@@ -143,3 +143,48 @@ variable "azure_rbac_enabled" {
   description = "Enable Azure RBAC for Kubernetes authorization, in addition to managed Azure AD integration."
   default     = false
 }
+
+variable "local_account_disabled" {
+  type        = bool
+  description = "Disable Kubernetes local admin accounts so all access goes through managed Entra. Removes the `az aks get-credentials --admin` break-glass path."
+  default     = true
+}
+
+variable "image_cleaner_interval_hours" {
+  type        = number
+  description = "Interval (hours) at which Image Cleaner garbage-collects unused images from nodes."
+  default     = 48
+
+  validation {
+    condition     = var.image_cleaner_interval_hours >= 24 && var.image_cleaner_interval_hours <= 2160
+    error_message = "image_cleaner_interval_hours must be between 24 and 2160."
+  }
+}
+
+variable "api_server_authorized_ip_ranges" {
+  type        = list(string)
+  description = <<-EOT
+    CIDR ranges allowed to reach the public API server. Empty (default) leaves the
+    API server open. To restrict it you MUST include your own client egress (e.g.
+    Cloud Shell's outbound IP) or you will lock yourself out.
+  EOT
+  default     = []
+}
+
+variable "pod_cidr" {
+  type        = string
+  description = "Pod CIDR for Azure CNI Overlay IPAM. Must not overlap your VNet/on-prem ranges."
+  default     = "10.244.0.0/16"
+}
+
+variable "service_cidr" {
+  type        = string
+  description = "Kubernetes service CIDR. dns_service_ip must fall within this range."
+  default     = "10.0.0.0/16"
+}
+
+variable "dns_service_ip" {
+  type        = string
+  description = "In-cluster DNS service IP (must be inside service_cidr)."
+  default     = "10.0.0.10"
+}

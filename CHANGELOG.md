@@ -4,6 +4,30 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2026-07-06] - Security hardening, policy enforcement & ops
+
+### Added
+- Cluster hardening (`terraform/aks-cluster.tf`): `local_account_disabled` (force
+  all access through Entra), Workload Identity + OIDC issuer, Image Cleaner, Azure
+  CNI Overlay with **Cilium** network policy (so NetworkPolicy is enforced), and an
+  optional API-server authorized-IP allowlist (`api_server_authorized_ip_ranges`,
+  empty = open so it can't lock you out). New variables/tfvars for each. Note the
+  network profile is ForceNew — set at provisioning.
+- Governance enforcement (`governance/`): assigns the built-in *"Kubernetes cluster
+  pod security baseline standards for Linux-based workloads"* initiative
+  (`a8640138-…`) in **Audit** mode by default, gated behind `assign_security_baseline`
+  / `baseline_effect`. The module now enforces guardrails, not just installs the add-on.
+- Optional remote state: `backend.tf.example` templates in both modules (azurerm
+  backend with AAD auth, distinct state keys).
+- Repo hygiene: root `.gitignore` and `.gitattributes` (LF normalization) to end the
+  CRLF churn.
+- Test coverage for the new hardening and the baseline initiative.
+
+### Note
+- A GitHub Actions CI workflow (fmt/validate/test on both modules) is prepared at
+  `.github/workflows/terraform.yml` but is not committed in this change — pushing
+  workflow files requires a token with `workflow` scope.
+
 ## [2026-07-06] - Upgrade to azurerm 4.x
 
 ### Changed

@@ -7,6 +7,16 @@ resource "azurerm_kubernetes_cluster" "aks" {
   kubernetes_version        = local.kubernetes_version
   automatic_upgrade_channel = var.automatic_channel_upgrade
 
+  # Hardening: force all cluster access through managed Entra (no local admin),
+  # and enable Workload Identity (federated pod identities) with its OIDC issuer.
+  local_account_disabled    = var.local_account_disabled
+  oidc_issuer_enabled       = true
+  workload_identity_enabled = true
+
+  # Garbage-collect stale/vulnerable images off the nodes.
+  image_cleaner_enabled        = true
+  image_cleaner_interval_hours = var.image_cleaner_interval_hours
+
   identity {
     type = "SystemAssigned"
   }
@@ -29,6 +39,31 @@ resource "azurerm_kubernetes_cluster" "aks" {
 
     upgrade_settings {
       max_surge = var.node_max_surge
+    }
+  }
+
+  # Azure CNI Overlay + Cilium data plane and network policy, so NetworkPolicy
+  # objects are actually enforced (the default kubenet silently ignores them).
+  # NOTE: the whole network_profile block is ForceNew — set it at provisioning
+  # time; changing it later recreates the cluster.
+  network_profile {
+    network_plugin      = "azure"
+    network_plugin_mode = "overlay"
+    network_data_plane  = "cilium"
+    network_policy      = "cilium"
+    load_balancer_sku   = "standard"
+    pod_cidr            = var.pod_cidr
+    service_cidr        = var.service_cidr
+    dns_service_ip      = var.dns_service_ip
+  }
+
+  # Restrict the public API server to an allowlist. Rendered only when ranges are
+  # provided — an empty list leaves the API server open rather than locking
+  # everyone out. Populate with your client egress (e.g. Cloud Shell) to enable.
+  dynamic "api_server_access_profile" {
+    for_each = length(var.api_server_authorized_ip_ranges) > 0 ? [1] : []
+    content {
+      authorized_ip_ranges = var.api_server_authorized_ip_ranges
     }
   }
 
